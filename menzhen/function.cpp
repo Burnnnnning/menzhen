@@ -183,7 +183,7 @@ void QueryOp(int choiceTable)
 	ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wstr1.c_str(), SQL_NTS);
 
 	switch (choiceTable) {
-	case 1:	// 查询表 Doctor
+	case 1:	// 查询医生信息-Doctor表
 	{
 		string sql = "select * from Doctor";
 		wstring wsql = StringToWString(sql);
@@ -191,66 +191,124 @@ void QueryOp(int choiceTable)
 
 		if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 		{
-			cout << "查询学生信息结果如下：" << endl;
-			SQLCHAR str1[50], str2[50], str3[50], str4[50];//用来存放从数据库获取的列信息，你有几列就定义几个变量
-			SQLLEN len_str1, len_str2, len_str3, len_str4;//字符串对应长度，你有几列就定义几个变量
-			cout << "学号" << " " << "姓名" << " " << "年龄" << " " << "所在系" << endl;
+			cout << "查询医生信息结果如下：" << endl;
+			SQLCHAR str1[255], str2[255], str3[255], str4[255], str5[255], str6[255], str7[255];//用来存放从数据库获取的列信息，你有几列就定义几个变量
+			SQLLEN len_str1, len_str2, len_str3, len_str4, len_str5, len_str6, len_str7;//字符串对应长度，你有几列就定义几个变量
+			cout << "医生编号" << " " << "医生姓名" << " " << "医生性别" << " " << "医生年龄" << " " << "医生科室" << " " << "联系电话" << " " << "出诊时间" << endl;
 			while (SQLFetch(hstmt) != SQL_NO_DATA)
 			{
-				SQLGetData(hstmt, 1, SQL_C_CHAR, str1, 50, &len_str1);//从数据库获取数据，你的列有多少，就写多少，从1开始
-				SQLGetData(hstmt, 2, SQL_C_CHAR, str2, 50, &len_str2);
-				SQLGetData(hstmt, 3, SQL_C_CHAR, str3, 50, &len_str3);
-				SQLGetData(hstmt, 4, SQL_C_CHAR, str4, 50, &len_str4);
+				SQLGetData(hstmt, 1, SQL_C_CHAR, str1, 255, &len_str1);//从数据库获取数据，你的列有多少，就写多少，从1开始
+				SQLGetData(hstmt, 2, SQL_C_CHAR, str2, 255, &len_str2);
+				SQLGetData(hstmt, 3, SQL_C_CHAR, str3, 255, &len_str3);
+				SQLGetData(hstmt, 4, SQL_C_CHAR, str4, 255, &len_str4);
+				SQLGetData(hstmt, 5, SQL_C_CHAR, str5, 255, &len_str5);
+				SQLGetData(hstmt, 6, SQL_C_CHAR, str6, 255, &len_str6);
+				SQLGetData(hstmt, 7, SQL_C_CHAR, str7, 255, &len_str7);
 				cout << string((char*)str1, len_str1) << "  " << string((char*)str2, len_str2)
-					<< "  " << string((char*)str3, len_str3) << "  " << string((char*)str4, len_str4) << endl;
+					<< "  " << string((char*)str3, len_str3) << "  " << string((char*)str4, len_str4)
+					<< "  " << string((char*)str5, len_str5) << "  " << string((char*)str6, len_str6)
+					<< "  " << string((char*)str7, len_str7) << endl;
 			}
 		}
 		break;
 	}
 	case 2:
 	{
-		// 查询表 Course
-		string sql = "select * from Course";
+		// 查询患者信息-Patient表
+		string sql = "select * from Patient";
 		wstring wsql = StringToWString(sql);
 		ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wsql.c_str(), SQL_NTS);
 
 		if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 		{
-			cout << "查询课程信息结果如下：" << endl;
-			SQLCHAR str1[50], str2[50], str3[50];
-			SQLLEN len_str1, len_str2, len_str3;
-			cout << "课程号" << " " << "课程名" << " " << "先行课" << endl;
+			cout << "查询患者信息结果如下：" << endl;
+			SQLCHAR str1[255], str2[255], str3[255], str4[255], str5[255], str6[255], str7[255], str8[255];//用来存放从数据库获取的列信息，你有几列就定义几个变量
+			SQLLEN len_str1, len_str2, len_str3, len_str4, len_str5, len_str6, len_str7, len_str8;//字符串对应长度，你有几列就定义几个变量
+			// 患者编号，身份证号，患者姓名，患者年龄，患者性别，患者症状，患者联系电话，患者医保
+			cout << "患者编号" << " " << "身份证号" << " " << "患者姓名" << " " << "患者年龄" << " " << "患者性别" << " " << "患者症状" << " " << "患者联系电话" << " " << "患者医保" << endl;
 			while (SQLFetch(hstmt) != SQL_NO_DATA)
 			{
-				SQLGetData(hstmt, 1, SQL_C_CHAR, str1, 50, &len_str1);//从数据库获取数据，你的列有多少，就写多少，从1开始
-				SQLGetData(hstmt, 2, SQL_C_CHAR, str2, 50, &len_str2);
-				SQLGetData(hstmt, 3, SQL_C_CHAR, str3, 50, &len_str3);
+				SQLGetData(hstmt, 1, SQL_C_CHAR, str1, 255, &len_str1);//从数据库获取数据，你的列有多少，就写多少，从1开始
+				SQLGetData(hstmt, 2, SQL_C_CHAR, str2, 255, &len_str2);
+				SQLGetData(hstmt, 3, SQL_C_CHAR, str3, 255, &len_str3);
+				SQLGetData(hstmt, 4, SQL_C_CHAR, str4, 255, &len_str4);
+				SQLGetData(hstmt, 5, SQL_C_CHAR, str5, 255, &len_str5);
+				SQLGetData(hstmt, 6, SQL_C_CHAR, str6, 255, &len_str6);
+				SQLGetData(hstmt, 7, SQL_C_CHAR, str7, 255, &len_str7);
+				SQLGetData(hstmt, 8, SQL_C_CHAR, str8, 255, &len_str8);
+				cout << string((char*)str1, len_str1) << "  " << string((char*)str2, len_str2)
+					<< "  " << string((char*)str3, len_str3) << "  " << string((char*)str4, len_str4)
+					<< "  " << string((char*)str5, len_str5) << "  " << string((char*)str6, len_str6)
+					<< "  " << string((char*)str7, len_str7) << "  " << string((char*)str8, len_str8) << endl;
+			}	
+		}
+		break;
+	}
+	case 3:
+	{
+		// 查询诊疗项目-Treatment_Item表
+		string sql = "select * from Treatment_Item";
+		wstring wsql = StringToWString(sql);
+		ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wsql.c_str(), SQL_NTS);
+
+		if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
+		{
+			cout << "查询诊疗项目信息结果如下：" << endl;
+			SQLCHAR str1[255], str2[255], str3[255];//用来存放从数据库获取的列信息，你有几列就定义几个变量
+			SQLLEN len_str1, len_str2, len_str3;//字符串对应长度，你有几列就定义几个变量
+			cout << "项目编号" << " " << "项目名称" << " " << "项目价格" << endl;
+			while (SQLFetch(hstmt) != SQL_NO_DATA)
+			{
+				SQLGetData(hstmt, 1, SQL_C_CHAR, str1, 255, &len_str1);//从数据库获取数据，你的列有多少，就写多少，从1开始
+				SQLGetData(hstmt, 2, SQL_C_CHAR, str2, 255, &len_str2);
+				SQLGetData(hstmt, 3, SQL_C_CHAR, str3, 255, &len_str3);
 				cout << string((char*)str1, len_str1) << "   " << string((char*)str2, len_str2)
 					<< "   " << string((char*)str3, len_str3) << endl;
 			}
 		}
 		break;
 	}
-	case 3:
+	case 4:
 	{
-		// 查询表 sc
-		string sql = "select * from sc";
+		// 查询看病信息-Patient_Doctor表
+		string sql = "select * from Patient_Doctor";
 		wstring wsql = StringToWString(sql);
 		ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wsql.c_str(), SQL_NTS);
 
 		if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 		{
-			cout << "查询成绩信息结果如下：" << endl;
-			SQLCHAR str1[50], str2[50], str3[50];//用来存放从数据库获取的列信息，你有几列就定义几个变量
-			SQLLEN len_str1, len_str2, len_str3;//字符串对应长度，你有几列就定义几个变量
-			cout << "学号" << " " << "课程号" << " " << "成绩" << endl;
+			cout << "查询看病信息结果如下：" << endl;
+			SQLCHAR str1[255], str2[255];
+			SQLLEN len_str1, len_str2;
+			cout << "患者编号" << " " << "医生编号" << endl;
 			while (SQLFetch(hstmt) != SQL_NO_DATA)
 			{
-				SQLGetData(hstmt, 1, SQL_C_CHAR, str1, 50, &len_str1);//从数据库获取数据，你的列有多少，就写多少，从1开始
-				SQLGetData(hstmt, 2, SQL_C_CHAR, str2, 50, &len_str2);
-				SQLGetData(hstmt, 3, SQL_C_CHAR, str3, 50, &len_str3);
-				cout << string((char*)str1, len_str1) << "   " << string((char*)str2, len_str2)
-					<< "   " << string((char*)str3, len_str3) << endl;
+				SQLGetData(hstmt, 1, SQL_C_CHAR, str1, 255, &len_str1);
+				SQLGetData(hstmt, 2, SQL_C_CHAR, str2, 255, &len_str2);
+				cout << string((char*)str1, len_str1) << "  " << string((char*)str2, len_str2) << endl;
+			}
+		}
+		break;
+	}
+	case 5:
+	{
+		// 查询治疗信息-Patient_Treatment_Item表
+		string sql = "select * from Patient_Treatment_Item";
+		wstring wsql = StringToWString(sql);
+		ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wsql.c_str(), SQL_NTS);
+
+		if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
+		{
+			cout << "查询治疗信息结果如下：" << endl;
+			SQLCHAR str1[255], str2[255], str3[255];
+			SQLLEN len_str1, len_str2, len_str3;
+			cout << "患者编号" << " " << "项目编号" << " " << "治疗时间" << endl;
+			while (SQLFetch(hstmt) != SQL_NO_DATA)
+			{
+				SQLGetData(hstmt, 1, SQL_C_CHAR, str1, 255, &len_str1);
+				SQLGetData(hstmt, 2, SQL_C_CHAR, str2, 255, &len_str2);
+				SQLGetData(hstmt, 3, SQL_C_CHAR, str3, 255, &len_str3);
+				cout << string((char*)str1, len_str1) << "  " << string((char*)str2, len_str2) << "  " << string((char*)str3, len_str3) << endl;
 			}
 		}
 		break;
