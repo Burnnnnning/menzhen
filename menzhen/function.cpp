@@ -14,23 +14,7 @@ void FreeHandle()
 	SQLFreeHandle(SQL_HANDLE_ENV, henv);
 }
 
-// 将 string 转换为 wstring
-//wstring StringToWString(const string& str)
-//{
-//	wstring result;
-//	int len = MultiByteToWideChar(CP_ACP, 0, str.c_str(), str.size(), NULL, 0);
-//	if (len < 0)return result;
-//	wchar_t* buffer = new wchar_t[len + 1];
-//	if (buffer == NULL)return result;
-//	MultiByteToWideChar(CP_ACP, 0, str.c_str(), str.size(), buffer, len);
-//	buffer[len] = '\0';
-//	result.append(buffer);
-//	delete[] buffer;
-//	return result;
-//	// 原方案，但发现中文编码会出现问题
-//	// return wstring(str.begin(), str.end());
-//}
-
+// 将 string 转为 wstring 
 wstring StringToWString(const std::string& str) 
 {
 	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
@@ -38,7 +22,7 @@ wstring StringToWString(const std::string& str)
 }
 
 // 测试返回值 ret
-void DeBug(SQLRETURN ret)
+void Debug(SQLRETURN ret)
 {
 	if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO) {
 		cout << "SQL_SUCCESS" << endl;
@@ -162,6 +146,7 @@ void InsertOp(int choiceTable)
 
 		string sql = "insert into Treatment_Item values('" + Item_Number + "','" + Item_Name + "','" + Item_Price + "')";
 		wstring wsql = StringToWString(sql);
+		wcout << wsql << endl;
 
 		ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wsql.c_str(), SQL_NTS);
 		if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO) {
@@ -170,42 +155,17 @@ void InsertOp(int choiceTable)
 		else {
 			cout << "诊疗项目信息插入失败！" << endl;
 		}
+		break;
 	}
 	case 4: // 看病信息-Patient_Doctor表
 	{
-		cout << "请依次输入：患者编号、医生编号" << endl;
-		cout << "（各项之间用空格分隔）" << endl;
-		string Patient_Number, Doctor_Number;
-		cin >> Patient_Number >> Doctor_Number;
-
-		string sql = "insert into Patient_Doctor values('" + Patient_Number + "','" + Doctor_Number + "')";
-		wstring wsql = StringToWString(sql);
-
-		ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wsql.c_str(), SQL_NTS);
-		if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO) {
-			cout << "看病信息插入成功！" << endl;
-		}
-		else {
-			cout << "看病信息插入失败！" << endl;
-		}
+		cout << "看病信息为关系表，无法直接插入！" << endl;
+		break;
 	}
 	case 5: // 治疗信息-Patient_Treatment_Item表
 	{
-		cout << "请依次输入：患者编号、项目编号" << endl;
-		cout << "（各项之间用空格分隔）" << endl;
-		string Patient_Number, Item_Number;
-		cin >> Patient_Number >> Item_Number;
-
-		string sql = "insert into Patient_Treatment_Item values('" + Patient_Number + "','" + Item_Number + "')";
-		wstring wsql = StringToWString(sql);
-
-		ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wsql.c_str(), SQL_NTS);
-		if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO) {
-			cout << "治疗信息插入成功！" << endl;
-		}
-		else {
-			cout << "治疗信息插入失败！" << endl;
-		}
+		cout << "治疗信息为关系表，无法直接插入！" << endl;
+		break;
 	}
 	default:
 		cout << "无效的表选择！" << endl;
