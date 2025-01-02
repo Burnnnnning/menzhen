@@ -15,20 +15,26 @@ void FreeHandle()
 }
 
 // 将 string 转换为 wstring
-wstring StringToWString(const string& str)
+//wstring StringToWString(const string& str)
+//{
+//	wstring result;
+//	int len = MultiByteToWideChar(CP_ACP, 0, str.c_str(), str.size(), NULL, 0);
+//	if (len < 0)return result;
+//	wchar_t* buffer = new wchar_t[len + 1];
+//	if (buffer == NULL)return result;
+//	MultiByteToWideChar(CP_ACP, 0, str.c_str(), str.size(), buffer, len);
+//	buffer[len] = '\0';
+//	result.append(buffer);
+//	delete[] buffer;
+//	return result;
+//	// 原方案，但发现中文编码会出现问题
+//	// return wstring(str.begin(), str.end());
+//}
+
+wstring StringToWString(const std::string& str) 
 {
-	wstring result;
-	int len = MultiByteToWideChar(CP_ACP, 0, str.c_str(), str.size(), NULL, 0);
-	if (len < 0)return result;
-	wchar_t* buffer = new wchar_t[len + 1];
-	if (buffer == NULL)return result;
-	MultiByteToWideChar(CP_ACP, 0, str.c_str(), str.size(), buffer, len);
-	buffer[len] = '\0';
-	result.append(buffer);
-	delete[] buffer;
-	return result;
-	// 原方案，但发现中文编码会出现问题
-	// return wstring(str.begin(), str.end());
+	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+	return converter.from_bytes(str);
 }
 
 // 测试返回值 ret
@@ -59,16 +65,14 @@ void Connect()
 {
 	// 申请环境
 	ret = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &henv);
-	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
-	{
+	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO) {
 		cout << "申请环境失败！" << endl;
 		return;
 	}
 
 	// 设置环境
 	ret = SQLSetEnvAttr(henv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER)SQL_OV_ODBC3, SQL_IS_INTEGER);
-	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
-	{
+	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO) {
 		cout << "设置环境失败！" << endl;
 		SQLFreeHandle(SQL_HANDLE_ENV, henv);
 		return;
@@ -76,8 +80,7 @@ void Connect()
 
 	// 申请数据库连接
 	ret = SQLAllocHandle(SQL_HANDLE_DBC, henv, &hdbc);
-	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
-	{
+	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO) {
 		cout << "申请数据库连接失败！" << endl;
 		SQLFreeHandle(SQL_HANDLE_ENV, henv);
 		return;
@@ -90,12 +93,10 @@ void Connect()
 
 	ret = SQLConnectW(hdbc, (SQLWCHAR*)wserver.c_str(), SQL_NTS, (SQLWCHAR*)wuser.c_str(),
 		SQL_NTS, (SQLWCHAR*)wpassword.c_str(), SQL_NTS);
-	if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
-	{
+	if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO) {
 		cout << "数据库连接成功!" << endl;
 	}
-	else
-	{
+	else {
 		cout << "数据库连接失败！" << endl;
 		SQLFreeHandle(SQL_HANDLE_DBC, hdbc);
 		SQLFreeHandle(SQL_HANDLE_ENV, henv);
@@ -106,65 +107,105 @@ void Connect()
 void InsertOp(int choiceTable)
 {
 	ret = SQLAllocHandle(SQL_HANDLE_STMT, hdbc, &hstmt); // 申请句柄  
-	string str1 = "use student"; // 选择数据库student
+	string str1 = "use menzhen"; // 选择数据库menzhen
 	wstring wstr1 = StringToWString(str1);
 	ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wstr1.c_str(), SQL_NTS);
 
 	switch (choiceTable) {
-	case 1: // 学生表  Student
+	case 1: // 医生信息-Doctor表
 	{
 		// 测试用例
-		// wstring sql = L"insert into Student values('201', 'Alice', 20, '计算机系')";
-		// ret = SQLExecDirectW(hstmt, (SQLWCHAR*)sql.c_str(), SQL_NTS);
-		cout << "请依次输入学号、姓名、年龄、所在系" << endl;
-		string Sno, Sname, Sage, Sdept;
-		cin >> Sno >> Sname >> Sage >> Sdept;
-		string sql = "insert into Student values('" + Sno + "','" + Sname + "'," + Sage + ",'" + Sdept + "')";
+		// 医生编号， 医生姓名， 医生性别， 医生年龄， 医生科室， 联系电话， 出诊时间
+		// insert into Doctor values('D001','张三','男',30,'内科','2019-01-01','2020-01-01')
+		cout << "请依次输入医生编号、医生姓名、医生性别、医生年龄、医生科室、出诊时间" << endl;
+		cout << "（各项之间用空格分隔）" << endl;
+		string Doctor_Number, Name, Gender, Age, Department, Contact_Phone, Outpatient_Time;
+		cin >> Doctor_Number >> Name >> Gender >> Age >> Department >> Contact_Phone >> Outpatient_Time;
+
+		string sql = "insert into Doctor values ('" + Doctor_Number + "', '" + Name + "', '" + Gender + "', '" + Age + "', '" + Department + "', '" + Contact_Phone + "', '" + Outpatient_Time + "')";
 		wstring wsql = StringToWString(sql);
-		wcout << wsql << endl;
 
 		ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wsql.c_str(), SQL_NTS);
 		if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO) {
-			cout << "学生信息插入成功！" << endl;
+			cout << "医生信息插入成功！" << endl;
 		}
 		else {
-			cout << "学生信息插入失败！" << endl;
+			cout << "医生信息插入失败！" << endl;
 		}
 		break;
 	}
-	case 2: // 课程表  Course
+	case 2: // 患者信息-Patient表
 	{
-		cout << "请依次输入课程号、课程名、先行课" << endl;
-		string Cno, Cname, Cbefore;
-		cin >> Cno >> Cname >> Cbefore;
-		string sql = "insert into Course values('" + Cno + "','" + Cname + "','" + Cbefore + "')";
+		cout << "请依次输入：患者编号、身份证号、患者姓名、患者年龄、患者症状、患者联系电话、患者医保" << endl;
+		cout << "（各项之间用空格分隔）" << endl;
+		string Patient_Number, ID_Card_Nubmer, Name, Age, Gender, Symptom, Contact_Info, Medical_Insurance;
+		cin >> Patient_Number >> ID_Card_Nubmer >> Name >> Age >> Gender >> Symptom >> Contact_Info >> Medical_Insurance;
+		
+		string sql = "insert into Patient values('" + Patient_Number + "','" + ID_Card_Nubmer + "','" + Name + "','" + Age + "','" + Gender + "','" + Symptom + "','" + Contact_Info + "','" + Medical_Insurance + "')";
 		wstring wsql = StringToWString(sql);
 
 		ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wsql.c_str(), SQL_NTS);
 		if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO) {
-			cout << "课程信息插入成功！" << endl;
+			cout << "患者信息插入成功！" << endl;
 		}
 		else {
-			cout << "课程信息插入失败！" << endl;
+			cout << "患者信息插入失败！" << endl;
 		}
 		break;
 	}
-	case 3: // 成绩表  sc
+	case 3: // 诊疗项目信息-Treatment_Item表
 	{
-		cout << "请依次输入学号、课程号、成绩" << endl;
-		string Sno, Cno, Grade;
-		cin >> Sno >> Cno >> Grade;
-		string sql = "insert into SC values ('" + Sno + "','" + Cno + "'," + Grade + ")";
+		cout << "请依次输入：项目编号、项目名称、项目价格" << endl;
+		cout << "（各项之间用空格分隔）" << endl;
+		string Item_Number, Item_Name, Item_Price;
+		cin >> Item_Number >> Item_Name >> Item_Price;
+
+		string sql = "insert into Treatment_Item values('" + Item_Number + "','" + Item_Name + "','" + Item_Price + "')";
 		wstring wsql = StringToWString(sql);
 
 		ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wsql.c_str(), SQL_NTS);
 		if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO) {
-			cout << "成绩信息插入成功！" << endl;
+			cout << "诊疗项目信息插入成功！" << endl;
 		}
 		else {
-			cout << "成绩信息插入失败！" << endl;
+			cout << "诊疗项目信息插入失败！" << endl;
 		}
-		break;
+	}
+	case 4: // 看病信息-Patient_Doctor表
+	{
+		cout << "请依次输入：患者编号、医生编号" << endl;
+		cout << "（各项之间用空格分隔）" << endl;
+		string Patient_Number, Doctor_Number;
+		cin >> Patient_Number >> Doctor_Number;
+
+		string sql = "insert into Patient_Doctor values('" + Patient_Number + "','" + Doctor_Number + "')";
+		wstring wsql = StringToWString(sql);
+
+		ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wsql.c_str(), SQL_NTS);
+		if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO) {
+			cout << "看病信息插入成功！" << endl;
+		}
+		else {
+			cout << "看病信息插入失败！" << endl;
+		}
+	}
+	case 5: // 治疗信息-Patient_Treatment_Item表
+	{
+		cout << "请依次输入：患者编号、项目编号" << endl;
+		cout << "（各项之间用空格分隔）" << endl;
+		string Patient_Number, Item_Number;
+		cin >> Patient_Number >> Item_Number;
+
+		string sql = "insert into Patient_Treatment_Item values('" + Patient_Number + "','" + Item_Number + "')";
+		wstring wsql = StringToWString(sql);
+
+		ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wsql.c_str(), SQL_NTS);
+		if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO) {
+			cout << "治疗信息插入成功！" << endl;
+		}
+		else {
+			cout << "治疗信息插入失败！" << endl;
+		}
 	}
 	default:
 		cout << "无效的表选择！" << endl;
@@ -177,14 +218,14 @@ void InsertOp(int choiceTable)
 void QueryOp(int choiceTable)
 {
 	ret = SQLAllocHandle(SQL_HANDLE_STMT, hdbc, &hstmt); // 申请句柄 
-	string str1 = "use student"; // 选择数据库student
+	string str1 = "use menzhen"; // 选择数据库menzhen
 	wstring wstr1 = StringToWString(str1);
 	ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wstr1.c_str(), SQL_NTS);
 
 	switch (choiceTable) {
-	case 1:
+	case 1:	// 查询表 Doctor
 	{
-		string sql = "select * from Student";
+		string sql = "select * from Doctor";
 		wstring wsql = StringToWString(sql);
 		ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wsql.c_str(), SQL_NTS);
 

@@ -7,6 +7,8 @@
 #include <sql.h> 
 #include <sqlext.h> 
 #include <sqltypes.h>
+#include <locale>
+#include <codecvt>
 using namespace std;
 
 // 声明全局变量

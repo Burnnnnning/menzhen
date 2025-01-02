@@ -5,12 +5,14 @@ void DisplayMenu()
 	while (true)
 	{
 		int choiceTable, choiceOp;
-		cout << "=====学习信息数据库管理系统=====" << endl;
+		cout << "=====门诊数据库管理系统=====" << endl;
 		cout << "选择要操作的数据表" << endl;
 		cout << "0.退出系统" << endl;
-		cout << "1.学生信息-Student表" << endl;
-		cout << "2.课程信息-Course表" << endl;
-		cout << "3.成绩信息-sc表" << endl;
+		cout << "1.医生信息-Doctor表" << endl;
+		cout << "2.患者信息-Patient表" << endl;
+		cout << "3.诊疗项目信息-Treatment_Item表" << endl;
+		cout << "4.看病信息-Patient_Doctor表" << endl;
+		cout << "5.治疗信息-Patient_Treatment_Item表" << endl;
 		cout << "请输入你的选择：";
 		cin >> choiceTable;
 		if (choiceTable == 0)	break;
