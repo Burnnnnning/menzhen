@@ -470,7 +470,7 @@ void ModifyOp(int choiceTable)
 	QueryOp(choiceTable);
 
 	ret = SQLAllocHandle(SQL_HANDLE_STMT, hdbc, &hstmt); // 申请句柄 
-	string str1 = "use student"; // 选择数据库student
+	string str1 = "use menzhen"; // 选择数据库menzhen
 	wstring wstr1 = StringToWString(str1);
 	ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wstr1.c_str(), SQL_NTS);
 
@@ -481,65 +481,107 @@ void ModifyOp(int choiceTable)
 	switch (choiceTable) {
 	case 1:
 	{
-		//string sql = "select * from Student";
-		//wstring wsql = StringToWString(sql);
-		//ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wsql.c_str(), SQL_NTS);
-
-		string condition, Sno, Sname, Sage, Sdept;
-		cout << "请输入要修改的学生学号" << endl;
+		// 修改医生信息-Doctor表
+		// 医生编号， 医生姓名， 医生性别， 医生年龄， 医生科室， 联系电话， 出诊时间
+		string condition, Doctor_Number, Name, Gender, Age, Department, Contact_Phone, Outpatient_Time;
+		cout << "请输入要修改的医生编号" << endl;
 		cin >> condition;
-		cout << "请输入修改后的内容，依次输入学号、姓名、年龄、所在系" << endl;
-		cin >> Sno >> Sname >> Sage >> Sdept;
-		string sql2 = "update Student set [sno-学号]='" + Sno + "',[sname-姓名]='" + Sname + "',[sage-年龄]=" + Sage + ",[sdept-所在系]='" + Sdept + "' where [sno-学号]='" + condition + "'";
+		cout << "请输入修改后的内容，依次输入医生编号， 医生姓名， 医生性别， 医生年龄， 医生科室， 联系电话， 出诊时间" << endl;
+		cin >> Doctor_Number >> Name >> Gender >> Age >> Department >> Contact_Phone >> Outpatient_Time;
+		string sql2 = "update Student set Doctor_Number='" + Doctor_Number + "',Name='" + Name + "',Gender='" + Gender + "',Age='" + Age + "',Department='" + Department + "',Contact_Phone='" + Contact_Phone + "',Outpatient_Time='" + Outpatient_Time + "' where Doctor_Number='" + condition + "'";
 		wstring wsql2 = StringToWString(sql2);
 
 		ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wsql2.c_str(), SQL_NTS);
 		if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO) {
-			cout << "修改成功！" << endl;
+			cout << "医生信息修改成功！" << endl;
 		}
 		else {
-			cout << "修改失败！" << endl;
+			cout << "医生信息修改失败！" << endl;
 		}
 		break;
 	}
 	case 2:
 	{
-		string condition, Cno, Cname, Cbefore;
-		cout << "请输入要修改的课程号" << endl;
+		// 修改患者信息-Patient表
+		// 患者编号，身份证号，患者姓名，患者年龄，患者性别，患者症状，患者联系电话，患者医保
+		string condition, Patient_Number, ID_Card_Nubmer, Name, Age, Gender, Symptom, Contact_Info, Medical_Insurance;
+		cout << "请输入要修改的患者编号" << endl;
 		cin >> condition;
-		cout << "请输入修改后的内容，依次输入课程号，课程名，先行课" << endl;
-		cin >> Cno >> Cname >> Cbefore;
-		string sql2 = "update Course set [cno-课程号]='" + Cno + "',[cname-课程名]='" + Cname + "',[cbefore-先行课]='" + Cbefore + "' where [cno-课程号]='" + condition + "'";
+		cout << "请输入修改后的内容，依次输入患者编号，身份证号，患者姓名，患者年龄，患者性别，患者症状，患者联系电话，患者医保" << endl;
+		cin >> Patient_Number >> ID_Card_Nubmer >> Name >> Age >> Gender >> Symptom >> Contact_Info >> Medical_Insurance;
+		string sql2 = "update Patient set Patient_Number='" + Patient_Number + "',ID_Card_Nubmer='" + ID_Card_Nubmer + "',Name='" + Name + "',Age='" + Age + ",Gender='" + Gender + ",Symptom='" + Symptom + ",Contact_Info='" + Contact_Info + ",Medical_Insurance='" + Medical_Insurance + "' where Patient_Number='" + condition + "'";
 		wstring wsql2 = StringToWString(sql2);
 
 		ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wsql2.c_str(), SQL_NTS);
 		if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO) {
-			cout << "修改成功！" << endl;
+			cout << "患者信息修改成功！" << endl;
 		}
 		else {
-			cout << "修改失败！" << endl;
+			cout << "患者信息修改失败！" << endl;
 		}
 		break;
 	}
 	case 3:
 	{
-		string conditionSno, conditionCno, Sno, Cno, grade;
-		cout << "请输入要修改的学生学号和课程号" << endl;
-		cin >> conditionSno >> conditionCno;
-		cout << "请输入修改后的内容，依次输入学号，课程号，成绩" << endl;
-		cin >> Sno >> Cno >> grade;
-		string sql2 = "update SC set [sno-学号]='" + Sno + "',[cno-课程号]='" + Cno + "',[grade-成绩]='" + grade + "' where [sno-学号]='" + conditionSno + "' and [cno-课程号]='" + conditionCno + "'";
+		// 修改诊疗项目信息-Treatment_Item表
+		// 项目编号，项目名称，项目价格
+		string condition, Item_Number, Item_Name, Price;
+		cout << "请输入要修改的项目编号" << endl;
+		cin >> condition;
+		cout << "请输入修改后的内容，依次输入项目编号、项目名称、项目价格" << endl;
+		cin >> Item_Number >> Item_Name >> Price;
+		string sql2 = "update Treatment_Item set Item_Number='" + Item_Number + "',Item_Name='" + Item_Name + "',Price='" + Price + "' where Item_Number='" + condition + "'";
 		wstring wsql2 = StringToWString(sql2);
 
 		ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wsql2.c_str(), SQL_NTS);
 		if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO) {
-			cout << "修改成功！" << endl;
+			cout << "诊疗项目信息修改成功！" << endl;
 		}
 		else {
-			cout << "修改失败！" << endl;
+			cout << "诊疗项目信息修改失败！" << endl;
 		}
 		break;
 	}
+	case 4:
+	{
+		// 修改看病信息-Patient_Doctor表
+		// 患者编号，医生编号，看病时间
+		string condition_patient, condition_doctor, Patient_Number, Doctor_Number, Medical_Time;
+		cout << "请输入要修改的患者编号和医生编号" << endl;
+		cin >> condition_patient >> condition_doctor;
+		cout << "请输入修改后的内容，依次输入患者编号、医生编号、看病时间" << endl;
+		cin >> Patient_Number >> Doctor_Number >> Medical_Time;
+		string sql2 = "update Patient_Doctor set Patient_Number='" + Patient_Number + "',Doctor_Number='" + Doctor_Number + "',Medical_Time='" + Medical_Time + "' where Patient_Number='" + condition_patient + "' and Doctor_Number='" + condition_doctor + "'";
+		wstring wsql2 = StringToWString(sql2);
+
+		ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wsql2.c_str(), SQL_NTS);
+		if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO) {
+			cout << "看病信息修改成功！" << endl;
+		}
+		else {
+			cout << "看病信息修改失败！" << endl;
+		}
+	}
+	case 5:
+	{
+		// 修改治疗信息-Patient_Treatment_Item表
+		// 患者编号，项目编号，治疗时间
+		string condition_patient, condition_item, Patient_Number, Item_Number, Treatment_Time;
+		cout << "请输入要修改的患者编号和项目编号" << endl;
+		cin >> condition_patient >> condition_item;
+		cout << "请输入修改后的内容，依次输入患者编号、项目编号、治疗时间" << endl;
+		cin >> Patient_Number >> Item_Number >> Treatment_Time;
+		string sql2 = "update Patient_Treatment_Item set Patient_Number='" + Patient_Number + "',Item_Number='" + Item_Number + "',Treatment_Time='" + Treatment_Time + "' where Patient_Number='" + condition_patient + "' and Item_Number='" + condition_item + "'";
+		wstring wsql2 = StringToWString(sql2);
+
+		ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wsql2.c_str(), SQL_NTS);
+		if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO) {
+			cout << "治疗信息修改成功！" << endl;
+		}
+		else {
+			cout << "治疗信息修改失败！" << endl;
+		}
+	}	
 	default:
 		cout << "无效的表选择！" << endl;
 		break;
