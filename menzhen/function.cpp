@@ -146,7 +146,6 @@ void InsertOp(int choiceTable)
 
 		string sql = "insert into Treatment_Item values('" + Item_Number + "','" + Item_Name + "','" + Item_Price + "')";
 		wstring wsql = StringToWString(sql);
-		wcout << wsql << endl;
 
 		ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wsql.c_str(), SQL_NTS);
 		if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO) {
@@ -159,12 +158,42 @@ void InsertOp(int choiceTable)
 	}
 	case 4: // 看病信息-Patient_Doctor表
 	{
-		cout << "看病信息为关系表，无法直接插入！" << endl;
+		// cout << "看病信息为关系表，无法直接插入！" << endl;
+		cout << "请依次输入：患者编号(必须存在)、医生编号(必须存在)、看病时间" << endl;
+		cout << "（各项之间用空格分隔）" << endl;
+		string Patient_Number, Doctor_Number, Medical_Time;
+		cin >> Patient_Number >> Doctor_Number >> Medical_Time;
+
+		string sql = "insert into Patient_Doctor values('" + Patient_Number + "','" + Doctor_Number + "','" + Medical_Time + "')";
+		wstring wsql = StringToWString(sql);
+
+		ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wsql.c_str(), SQL_NTS);
+		if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO) {
+			cout << "看病信息插入成功！" << endl;
+		}
+		else {
+			cout << "看病信息插入失败！" << endl;
+		}
 		break;
 	}
 	case 5: // 治疗信息-Patient_Treatment_Item表
 	{
-		cout << "治疗信息为关系表，无法直接插入！" << endl;
+		// cout << "治疗信息为关系表，无法直接插入！" << endl
+		cout << "请依次输入：患者编号(必须存在)、项目编号(必须存在)、治疗时间" << endl;
+		cout << "（各项之间用空格分隔）" << endl;
+		string Patient_Number, Item_Number, Treatment_Time;
+		cin >> Patient_Number >> Item_Number >> Treatment_Time;
+
+		string sql = "insert into Patient_Treatment_Item values('" + Patient_Number + "','" + Item_Number + "','" + Treatment_Time + "')";
+		wstring wsql = StringToWString(sql);
+
+		ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wsql.c_str(), SQL_NTS);
+		if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO) {
+			cout << "治疗信息插入成功！" << endl;
+		}
+		else {
+			cout << "治疗信息插入失败！" << endl;
+		}
 		break;
 	}
 	default:
@@ -278,14 +307,15 @@ void QueryOp(int choiceTable)
 		if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 		{
 			cout << "查询看病信息结果如下：" << endl;
-			SQLCHAR str1[255], str2[255];
-			SQLLEN len_str1, len_str2;
-			cout << "患者编号" << " " << "医生编号" << endl;
+			SQLCHAR str1[255], str2[255], str3[255];
+			SQLLEN len_str1, len_str2, len_str3;
+			cout << "患者编号" << " " << "医生编号" << " " << "看病时间" << endl;
 			while (SQLFetch(hstmt) != SQL_NO_DATA)
 			{
 				SQLGetData(hstmt, 1, SQL_C_CHAR, str1, 255, &len_str1);
 				SQLGetData(hstmt, 2, SQL_C_CHAR, str2, 255, &len_str2);
-				cout << string((char*)str1, len_str1) << "  " << string((char*)str2, len_str2) << endl;
+				SQLGetData(hstmt, 3, SQL_C_CHAR, str3, 255, &len_str3);
+				cout << string((char*)str1, len_str1) << "  " << string((char*)str2, len_str2) << "  " << string((char*)str3, len_str3) << endl;
 			}
 		}
 		break;
@@ -323,66 +353,107 @@ void QueryOp(int choiceTable)
 
 void DeleteOp(int choiceTable)
 {
+	// 查询操作，用来显示表内容
 	QueryOp(choiceTable);
 
 	ret = SQLAllocHandle(SQL_HANDLE_STMT, hdbc, &hstmt); // 申请句柄 
-	string str1 = "use student";
+	string str1 = "use menzhen";
 	wstring wstr1 = StringToWString(str1);
 	ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wstr1.c_str(), SQL_NTS);
 
 	switch (choiceTable) {
 	case 1:
 	{
-		string sql = "delete from Student where [sno-学号]=";
+		// 删除医生信息-Doctor表
+		string sql = "delete from Doctor where Doctor_Number=";
 		string Sno;
-		cout << "请输入要删除的学生学号" << endl;
+		cout << "请输入要删除的医生编号" << endl;
 		cin >> Sno;
 		sql = sql + "'" + Sno + "'";
 		wstring wsql = StringToWString(sql);
 
 		ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wsql.c_str(), SQL_NTS);
 		if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO) {
-			cout << "学生信息删除成功！" << endl;
+			cout << "医生信息删除成功！" << endl;
 		}
 		else {
-			cout << "学生信息删除失败！" << endl;
+			cout << "医生信息删除失败！" << endl;
 		}
 		break;
 	}
 	case 2:
 	{
-		string sql = "delete from Course where [cno-课程号]=";
-		string Cno;
-		cout << "请输入要删除的课程号" << endl;
-		cin >> Cno;
-		sql = sql + "'" + Cno + "'";
+		// 删除患者信息-Patient表
+		string sql = "delete from Patient where Patient_Number=";
+		string Sno;
+		cout << "请输入要删除的患者编号" << endl;
+		cin >> Sno;
+		sql = sql + "'" + Sno + "'";
 		wstring wsql = StringToWString(sql);
 
 		ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wsql.c_str(), SQL_NTS);
 		if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO) {
-			cout << "课程信息删除成功！" << endl;
+			cout << "患者信息删除成功！" << endl;
 		}
 		else {
-			cout << "课程信息删除失败！" << endl;
+			cout << "患者信息删除失败！" << endl;
 		}
 		break;
 	}
 	case 3:
 	{
-		string sql = "delete from sc where ";
-		string Sno, Cno;
-		cout << "请输入要删除的学生学号和课程号" << endl;
-		cin >> Sno >> Cno;
-		sql = sql + "[sno-学号]='" + Sno + "' and " + "[cno-课程号]='" + Cno + "'";
-		cout << sql << endl;
+		// 删除诊疗项目信息-Treatment_Item表
+		string sql = "delete from Treatment_Item where Item_Number=";
+		string Sno;
+		cout << "请输入要删除的诊疗项目编号" << endl;
+		cin >> Sno;
+		sql = sql + "'" + Sno + "'";
 		wstring wsql = StringToWString(sql);
 
 		ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wsql.c_str(), SQL_NTS);
 		if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO) {
-			cout << "成绩信息删除成功！" << endl;
+			cout << "诊疗项目信息删除成功！" << endl;
 		}
 		else {
-			cout << "成绩信息删除失败！" << endl;
+			cout << "诊疗项目信息删除失败！" << endl;
+		}
+		break;
+	}
+	case 4:
+	{
+		// 删除看病信息-Patient_Doctor
+		string sql = "delete from Patient_Doctor where ";
+		string Sno, Cno;
+		cout << "请输入要删除的患者编号和医生编号" << endl;
+		cin >> Sno >> Cno;
+		sql = sql + "Patient_Number='" + Sno + "' and " + "Doctor_Number='" + Cno + "'";
+		wstring wsql = StringToWString(sql);
+
+		ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wsql.c_str(), SQL_NTS);
+		if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO) {
+			cout << "看病信息删除成功！" << endl;
+		}
+		else {
+			cout << "看病信息删除失败！" << endl;
+		}
+		break;
+	}
+	case 5:
+	{
+		// 删除治疗信息-Patient_Treatment_Item
+		string sql = "delete from Patient_Treatment_Item where ";
+		string Sno, Cno;
+		cout << "请输入要删除的患者编号和项目编号" << endl;
+		cin >> Sno >> Cno;
+		sql = sql + "Patient_Number='" + Sno + "' and " + "Item_Number='" + Cno + "'";
+		wstring wsql = StringToWString(sql);
+
+		ret = SQLExecDirectW(hstmt, (SQLWCHAR*)wsql.c_str(), SQL_NTS);
+		if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO) {
+			cout << "治疗信息删除成功！" << endl;
+		}
+		else {
+			cout << "治疗信息删除失败！" << endl;
 		}
 		break;
 	}
